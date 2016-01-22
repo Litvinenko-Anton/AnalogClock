@@ -1,37 +1,29 @@
-package com.example.i7.analogclock;
+package com.example.i7_4770k.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.TimePicker.OnTimeChangedListener;
 
 import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity {
+public class ChangeActivity extends AppCompatActivity {
 
     private TextView tvInfo;
     private TimePicker timepicker;
     private Button butGetTime;
     private String doublePoint;  // :0 else :
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Убираем заголовок
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        // Убираем панель уведомлений
-        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.layout);
+        setContentView(R.layout.activity_change);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -40,30 +32,37 @@ public class MainActivity extends AppCompatActivity {
 
         Calendar now = Calendar.getInstance();
 
-
-
         timepicker.setCurrentHour(now.get(Calendar.HOUR_OF_DAY));
         timepicker.setCurrentMinute(now.get(Calendar.MINUTE));
-        timepicker.setOnTimeChangedListener(new OnTimeChangedListener() {
+        timepicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
 
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
                 /*Toast.makeText(getApplicationContext(), "onTimeChanged",
                         Toast.LENGTH_SHORT).show();*/
 
-                if (minute<10) doublePoint = ":0"; else doublePoint = ":";
-                    tvInfo.setText("Время: " + hourOfDay + doublePoint + minute);
+                if (minute < 10) doublePoint = ":0";
+                else doublePoint = ":";
+                tvInfo.setText("Время: " + hourOfDay + doublePoint + minute);
             }
         });
 
         butGetTime = (Button) findViewById(R.id.button1);
 
-        butGetTime.setOnClickListener(new OnClickListener() {
+        butGetTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (timepicker.getCurrentMinute() < 10) doublePoint = ":0";
+                else doublePoint = ":";
                 tvInfo.setText(new StringBuilder()
-                        .append(timepicker.getCurrentHour()).append(":")
+                        .append(timepicker.getCurrentHour()).append(doublePoint)
                         .append(timepicker.getCurrentMinute()));
+
+                //передача интента в предыдущее активити
+                Intent intent = new Intent();
+                intent.putExtra("cloc", tvInfo.getText().toString());
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
 
@@ -77,25 +76,4 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

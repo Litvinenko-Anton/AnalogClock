@@ -1,4 +1,4 @@
-package com.example.i7.analogclock;
+package com.example.i7_4770k.myapplication;
 
 import org.junit.Test;
 
